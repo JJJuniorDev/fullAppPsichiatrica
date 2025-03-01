@@ -1,0 +1,30 @@
+# Ignora la cartella dei build output
+target/
+*.jar
+
+# Ignora file di configurazione locali di Eclipse
+.classpath
+.project
+.settings/
+
+# Ignora file di log
+*.log
+
+# Ignora dipendenze scaricate (se non usi un package manager per gestirle)
+lib/
+
+# Ignora file temporanei di sistema
+.DS_Store
+Thumbs.db
+
+# Ignora variabili di ambiente locali (se usi dotenv)
+.env
+
+# Ignora file Maven e Gradle di build temporanei
+*.war
+*.ear
+*.class
+*.cache
+.gradle/
+mvnw
+mvnw.cmd
