@@ -6,16 +6,15 @@ RUN apt-get update && apt-get install -y maven
 
 WORKDIR /app
 
-# Copia il parent POM in una directory separata
-COPY ../pom.xml /app/parent-pom.xml 
+# Copia tutta la cartella backend-main per preservare la struttura
+COPY ../backend-main /app/backend-main
 
-# Copia tutto il codice sorgente della cartella app/
-COPY . .
+# Spostati nella cartella principale e installa il parent POM
+WORKDIR /app/backend-main
+RUN mvn clean install 
 
-# Installa il parent POM prima di buildare l'app
-RUN mvn -f /app/parent-pom.xml clean install 
-
-# Compila l'app
+# Spostati nella cartella dell'app e compila
+WORKDIR /app/backend-main/app
 RUN mvn clean package
 
 # Secondo stage: usa solo il JAR
@@ -24,7 +23,7 @@ FROM openjdk:17-jdk-slim
 EXPOSE 8080
 
 # Copia il JAR generato dallo stage precedente
-COPY --from=build /app/target/app-1.0-SNAPSHOT.jar /app/app.jar
+COPY --from=build /app/backend-main/app/target/app-1.0-SNAPSHOT.jar /app/app.jar
 
 # Comando per eseguire l'applicazione
 CMD ["java", "-jar", "/app/app.jar"]
