@@ -1,24 +1,27 @@
-# Stage 1: Costruzione del JAR
+# Usa OpenJDK 17
 FROM openjdk:17-jdk-slim AS build
 
+# Installa Maven
+RUN apt-get update && apt-get install -y maven
+
 WORKDIR /app
 
-# Installa Maven e copia il codice sorgente
-RUN apt-get update && apt-get install -y maven
+# Copia il codice sorgente
 COPY . .
 
-# Compila il progetto
-RUN mvn clean package
+# Installa il parent POM prima di buildare l'app
+RUN mvn -f backend-main/pom.xml clean install 
 
-# Stage 2: Esegui solo il JAR
+# Compila l'app
+RUN mvn -f app/pom.xml clean package
+
+# Secondo stage: usa solo il JAR
 FROM openjdk:17-jdk-slim
-
-WORKDIR /app
-
-# Copia solo il JAR dal primo stage
-COPY --from=build /app/target/app-1.0-SNAPSHOT.jar app.jar
 
 EXPOSE 8080
 
-# Esegui l'applicazione
-CMD ["java", "-jar", "app.jar"]
+# Copia il JAR generato dallo stage precedente
+COPY --from=build /app/app/target/app-1.0-SNAPSHOT.jar /app/app.jar
+
+# Comando per eseguire l'applicazione
+CMD ["java", "-jar", "/app/app.jar"]
