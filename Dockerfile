@@ -18,4 +18,4 @@ FROM openjdk:17-jdk-slim
 EXPOSE 8080
 
 # Comando per eseguire l'applicazione
-CMD ["java", "-jar", "/app/app.jar", "/app/target/app-1.0-SNAPSHOT.jar"]
+CMD ["java", "-jar", "/app/target/app-1.0-SNAPSHOT.jar"]
