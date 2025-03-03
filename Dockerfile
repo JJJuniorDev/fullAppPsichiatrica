@@ -1,11 +1,22 @@
-# Usa un'immagine leggera di OpenJDK
-FROM openjdk:17-jdk-slim
+# Usa un'immagine con Maven per costruire l'app
+FROM maven:3.8.6-openjdk-17 AS build
 
-# Imposta la directory di lavoro all'interno del container
 WORKDIR /app
 
-# Copia il JAR generato dalla tua applicazione
-COPY target/app-1.0-SNAPSHOT.jar /app/app.jar
+# Copia i file del progetto
+COPY pom.xml .
+COPY src/ ./src/
 
-# Definisce il comando per avviare l'applicazione
+# Compila il progetto con Maven (senza dipendere dalla tua macchina)
+RUN mvn clean package
+
+# Secondo stage: usa solo il JAR
+FROM openjdk:17-jdk-slim
+
+EXPOSE 8080
+
+# Copia il JAR generato nello stage precedente
+COPY --from=build /app/target/app-1.0-SNAPSHOT.jar /app/app.jar
+
+# Comando per eseguire l'applicazione
 CMD ["java", "-jar", "/app/app.jar"]
