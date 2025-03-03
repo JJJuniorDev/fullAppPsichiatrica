@@ -6,17 +6,17 @@ RUN apt-get update && apt-get install -y maven
 
 WORKDIR /app
 
-# Copia il POM del progetto parent
-COPY ../pom.xml ../
+# Copia il parent POM in una directory separata
+COPY ../pom.xml /app/parent-pom.xml 
 
-# Copia tutto il codice sorgente
+# Copia tutto il codice sorgente della cartella app/
 COPY . .
 
 # Installa il parent POM prima di buildare l'app
-RUN mvn -f ../pom.xml clean install 
+RUN mvn -f /app/parent-pom.xml clean install 
 
 # Compila l'app
-RUN mvn -f pom.xml clean package
+RUN mvn clean package
 
 # Secondo stage: usa solo il JAR
 FROM openjdk:17-jdk-slim
