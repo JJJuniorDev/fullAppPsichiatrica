@@ -1,11 +1,13 @@
-# Usa un'immagine con Maven per costruire l'app
-FROM maven:3.8.6-openjdk-17 AS build
+# Usa OpenJDK 17
+FROM openjdk:17-jdk-slim
+
+# Installa Maven
+RUN apt-get update && apt-get install -y maven
 
 WORKDIR /app
 
-# Copia i file del progetto
-COPY pom.xml .
-COPY src/ ./src/
+# Copia il codice sorgente
+COPY . .
 
 # Compila il progetto con Maven (senza dipendere dalla tua macchina)
 RUN mvn clean package
@@ -15,8 +17,5 @@ FROM openjdk:17-jdk-slim
 
 EXPOSE 8080
 
-# Copia il JAR generato nello stage precedente
-COPY --from=build /app/target/app-1.0-SNAPSHOT.jar /app/app.jar
-
 # Comando per eseguire l'applicazione
-CMD ["java", "-jar", "/app/app.jar"]
+CMD ["java", "-jar", "/app/app.jar", "/app/target/app-1.0-SNAPSHOT.jar"]
