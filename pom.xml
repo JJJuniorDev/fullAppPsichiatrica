@@ -6,6 +6,7 @@
     <groupId>com.dentista</groupId>
     <artifactId>backend-main</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+   <!-- <relativePath>app/pom.xml</relativePath>  Ora è dentro app -->
   </parent>
   <groupId>com.dentista</groupId>
   <artifactId>app</artifactId>
@@ -35,4 +36,25 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+  <build>
+        <plugins>
+            <!--  <plugin>
+				
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>3.8.1</version>
+            <configuration>
+                <source>{java.version}</source>
+                <target>{java.version}</target>
+                <compilerArgs>
+                    <arg>-parameters</arg>
+                </compilerArgs>
+            </configuration>
+              </plugin>-->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 </project>
